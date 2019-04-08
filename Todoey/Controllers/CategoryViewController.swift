@@ -8,17 +8,17 @@
 //
 
 import UIKit
-import CoreData
+import RealmSwift
 
 class CategoryViewController: UITableViewController {
+    let realm = try! Realm()
     var categoryArray = [Category]()
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-
     override func viewDidLoad() {
         super.viewDidLoad()
-        //path for storing database 
-         print (FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
-        loadCategory()
+//        print (Realm.Configuration.defaultConfiguration.fileURL)
+        //path for storing database
+//         print (FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
+//        loadCategory()
         
     }
    
@@ -42,7 +42,7 @@ class CategoryViewController: UITableViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let destinationVC = segue.destination as! ToDoListViewController
         if let indexPath = tableView.indexPathForSelectedRow{
-            destinationVC.selectedCategory = categoryArray[indexPath.row]
+//            destinationVC.selectedCategory = categoryArray[indexPath.row]
         }
     }
     
@@ -53,10 +53,10 @@ class CategoryViewController: UITableViewController {
        let alert = UIAlertController(title: "Add New Category", message: "", preferredStyle: .alert)
            alert.addAction(UIAlertAction(title: "Add Category", style: .default) { (action) in
             
-       let newCategory = Category(context: self.context)
+       let newCategory = Category()
            newCategory.name = textField.text!
            self.categoryArray.append(newCategory)
-           self.saveCategory()
+           self.save(category: newCategory)
            self.tableView.reloadData()
 
         })
@@ -69,22 +69,24 @@ class CategoryViewController: UITableViewController {
     
     
     //MARK: - TableView Manipulation Methods
-    func saveCategory(){
+    func save(category :Category){
         do{
-            try context.save()
+            try realm.write {
+                realm.add(category)
+            }
         }catch{
             print("save category error \(error)")
         }
         tableView.reloadData()
     }
     
-    func loadCategory() {
-        let requset : NSFetchRequest<Category> = Category.fetchRequest()
-        do{
-            try categoryArray = context.fetch(requset)
-        }catch{
-            print ("fetching request error \(error)")
-        }
-        tableView.reloadData()
-    }
+//    func loadCategory() {
+//        let requset : NSFetchRequest<Category> = Category.fetchRequest()
+//        do{
+//            try categoryArray = context.fetch(requset)
+//        }catch{
+//            print ("fetching request error \(error)")
+//        }
+//        tableView.reloadData()
+//    }
 }

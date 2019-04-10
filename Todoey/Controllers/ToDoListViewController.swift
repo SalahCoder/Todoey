@@ -31,13 +31,8 @@ class ToDoListViewController: UITableViewController {
                cell.textLabel?.text = item.title
             //Ternary Operator FORMAT ==>
             //value = condition ? valueIfTrue : valueIfFalse
-            //        cell.accessoryType = item.done ? .checkmark : .none //use can delete item.done==true
-            //the above line same as the beloew but in shorter way -- use it always
-            //        if item.done == true{
-            //            cell.accessoryType = .checkmark
-            //        }else{
-            //            cell.accessoryType = .none
-            //        }
+               cell.accessoryType = item.done ? .checkmark : .none //use can delete item.done==true
+          
         }else{
             cell.textLabel?.text = "No Items Added Yet"
         }
@@ -52,7 +47,20 @@ class ToDoListViewController: UITableViewController {
         //for deleting items from context and itemArray
 //        context.delete(itemArray[indexPath.row])
 //        itemArray.remove(at: indexPath.row)
-        
+        if let item = toDoItems?[indexPath.row]{
+            do{
+                try realm.write {
+                    //for deleting item from (realm , tableView)
+//                    realm.delete(item)
+                    
+                    //for updating items using realm
+                    item.done = !item.done
+                }
+            }catch{
+                print("updating error \(error)")
+            }
+        }
+        //for updating items using coreData
 //          toDoItems[indexPath.row].done = !toDoItems[indexPath.row].done
         
 //          saveItem()

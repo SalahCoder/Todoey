@@ -20,8 +20,6 @@ class ToDoListViewController: SwipeTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 //        print (FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
-         tableView.rowHeight = 80
- 
     }
     //MARK - TableView datasource Methods
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -114,12 +112,6 @@ extension ToDoListViewController: UISearchBarDelegate{
         
           toDoItems = toDoItems?.filter("title CONTAINS[cd] %@", searchBar.text!).sorted(byKeyPath: "dateCreated", ascending: true)
           tableView.reloadData()
-        
-//        let requset : NSFetchRequest<Item> = Item.fetchRequest()
-//        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
-//        let sortDescroptor = NSSortDescriptor(key: "title", ascending: true)
-//        requset.sortDescriptors = [sortDescroptor]
-//        loadItem(with: requset , predicate: predicate)
     }
 
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {

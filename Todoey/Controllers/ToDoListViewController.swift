@@ -9,7 +9,7 @@
 import UIKit
 import RealmSwift
 
-class ToDoListViewController: UITableViewController {
+class ToDoListViewController: SwipeTableViewController {
     let realm = try! Realm()
     var toDoItems : Results<Item>?
     var selectedCategory : Category? {
@@ -20,18 +20,15 @@ class ToDoListViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 //        print (FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
-         //retreiving data useing userDefaults
-//        loadItem()
+         tableView.rowHeight = 80
  
     }
     //MARK - TableView datasource Methods
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-       let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
+       let cell = super.tableView(tableView, cellForRowAt: indexPath)
         
         if let item = toDoItems?[indexPath.row]{
                cell.textLabel?.text = item.title
-            //Ternary Operator FORMAT ==>
-            //value = condition ? valueIfTrue : valueIfFalse
                cell.accessoryType = item.done ? .checkmark : .none //use can delete item.done==true
           
         }else{
@@ -44,16 +41,11 @@ class ToDoListViewController: UITableViewController {
     }
     //MARK - tableView delegate methods
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        print (itemArray[indexPath.row])
-        //for deleting items from context and itemArray
-//        context.delete(itemArray[indexPath.row])
-//        itemArray.remove(at: indexPath.row)
-        if let item = toDoItems?[indexPath.row]{
+
+      if let item = toDoItems?[indexPath.row]{
             do{
                 try realm.write {
-                    //for deleting item from (realm , tableView)
-//                    realm.delete(item)
-                    
+                   
                     //for updating items using realm
                     item.done = !item.done
                 }
@@ -61,16 +53,21 @@ class ToDoListViewController: UITableViewController {
                 print("updating error \(error)")
             }
         }
-        //for updating items using coreData
-//          toDoItems[indexPath.row].done = !toDoItems[indexPath.row].done
-        
-//          saveItem()
-
         tableView.reloadData()
-        
         tableView.deselectRow(at: indexPath, animated: true)
-        
-        
+    }
+    //MARK: - deleting cell from swipe
+    override func updateModel(at indexPath: IndexPath) {
+        if let item1 = toDoItems?[indexPath.row]{
+            do{
+                try self.realm.write {
+                    self.realm.delete(item1)
+                }
+            }catch {
+                print ("deleting category error")
+            }
+            // tableView.reloadData()
+        }
     }
     //MARK - add new item
     

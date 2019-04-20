@@ -37,7 +37,9 @@ class CategoryViewController: SwipeTableViewController {
     
     //MARK: - delete data by swiping cell
     override func updateModel(at indexPath: IndexPath){
-       
+      //for calling updateModel from super class(swipeClass)
+        super.updateModel(at: indexPath)
+        
         if let item1 = self.categories?[indexPath.row]{
             do{
                 try self.realm.write {
